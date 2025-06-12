@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BiCamera, BiHeart } from "react-icons/bi";
 
 export default function Home() {
@@ -6,9 +7,9 @@ export default function Home() {
       <div className="flex flex-col justify-center items-center gap-y-5">
         <h1 className="text-2xl font title">Photo Booth</h1>
         <div className="flex flex-row justify-center items-center gap-4">
-          <button className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase">
+          <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase">
             Start <BiCamera className=""/>
-          </button>
+          </Link>
           <button className="p-5 bg-white rounded-full">
             <BiHeart />
           </button>
