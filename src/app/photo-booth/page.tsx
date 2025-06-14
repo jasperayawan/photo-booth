@@ -124,88 +124,60 @@ const PhotoBooth = () => {
 
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [cameraPermission, setCameraPermission] = useState<
-    "pending" | "granted" | "denied"
-  >("pending");
+  "prompt" | "granted" | "denied" | "pending"
+>("prompt");
 
   // === Function to start the camera stream ===
-  const startCamera = useCallback(async () => {
-    try {
-      setCameraError(null);
-      setCameraPermission("pending");
+ const startCamera = useCallback(async () => {
+  try {
+    setCameraError(null);
 
-      // Check for camera permission using Permissions API
-      if (navigator.permissions) {
-        const result = await navigator.permissions.query({
-          name: "camera" as PermissionName,
-        });
-
-        if (result.state === "denied") {
-          setCameraPermission("denied");
-          setCameraError(
-            "Camera access denied. Please allow camera permissions and refresh the page."
-          );
-          return;
-        }
-      }
-
-      // Ensure getUserMedia is supported
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Camera not supported in this browser.");
-      }
-
-      // Request the camera stream
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: "user", // Prefer front camera (selfie mode)
-        },
-      });
-
-      setCameraPermission("granted");
-
-      // Assign stream to video element
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        setCameraPermission("granted");
-      }
-    } catch (error: any) {
-      console.error("Error accessing camera:", error);
-      setCameraPermission("denied");
-
-      // Handle various camera errors
-      if (
-        error.name === "NotAllowedError" ||
-        error.name === "PermissionDeniedError"
-      ) {
-        setCameraError(
-          "Camera access denied. Please allow camera permissions and refresh the page."
-        );
-      } else if (
-        error.name === "NotFoundError" ||
-        error.name === "DevicesNotFoundError"
-      ) {
-        setCameraError(
-          "No camera found. Please connect a camera and try again."
-        );
-      } else if (
-        error.name === "NotReadableError" ||
-        error.name === "TrackStartError"
-      ) {
-        setCameraError("Camera is already in use by another application.");
-      } else if (
-        error.name === "OverconstrainedError" ||
-        error.name === "ConstraintNotSatisfiedError"
-      ) {
-        setCameraError("Camera does not meet the required specifications.");
-      } else {
-        setCameraError(
-          `Camera error: ${error.message || "Unknown error occurred"}`
-        );
-      }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error("Camera not supported in this browser.");
     }
-  }, []);
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode: "user",
+      },
+    });
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      streamRef.current = stream;
+    }
+
+  } catch (error: any) {
+    console.error("Error accessing camera:", error);
+    setCameraPermission("denied");
+
+    if (
+      error.name === "NotAllowedError" ||
+      error.name === "PermissionDeniedError"
+    ) {
+      setCameraError("Camera access denied. Please allow camera permissions and refresh the page.");
+    } else if (
+      error.name === "NotFoundError" ||
+      error.name === "DevicesNotFoundError"
+    ) {
+      setCameraError("No camera found. Please connect a camera and try again.");
+    } else if (
+      error.name === "NotReadableError" ||
+      error.name === "TrackStartError"
+    ) {
+      setCameraError("Camera is already in use by another application.");
+    } else if (
+      error.name === "OverconstrainedError" ||
+      error.name === "ConstraintNotSatisfiedError"
+    ) {
+      setCameraError("Camera does not meet the required specifications.");
+    } else {
+      setCameraError(`Camera error: ${error.message || "Unknown error occurred"}`);
+    }
+  }
+}, []);
 
   // === Retry camera function if denied or failed ===
   const retryCamera = useCallback(() => {
@@ -329,12 +301,48 @@ const PhotoBooth = () => {
   }
 
   // === Start camera on mount; stop on unmount ===
-  useEffect(() => {
-    startCamera();
-    return () => stopCamera();
-  }, [startCamera, stopCamera, cameraPermission]);
-  
 
+  useEffect(() => {
+  // Check permission on mount
+  const checkPermission = async () => {
+    if (!navigator.permissions) {
+      setCameraPermission("prompt");
+      return;
+    }
+
+    try {
+      const result = await navigator.permissions.query({
+        name: "camera" as PermissionName,
+      });
+
+      if (result.state === "granted") {
+        setCameraPermission("granted");
+      } else if (result.state === "denied") {
+        setCameraPermission("denied");
+        setCameraError("Camera access denied. Please allow camera permissions and refresh the page.");
+      } else {
+        setCameraPermission("prompt");
+      }
+
+      result.onchange = () => {
+        setCameraPermission(result.state as any);
+      };
+    } catch {
+      setCameraPermission("prompt");
+    }
+  };
+
+  checkPermission();
+}, []);
+
+useEffect(() => {
+  // Only start camera if permission is granted
+  if (cameraPermission === "granted") {
+    startCamera();
+  }
+}, [cameraPermission, startCamera]);
+
+  
   return (
     <div className="min-h-screen bg-white flex justify-center items-center px-4">
       <GalleryModal
