@@ -12,7 +12,10 @@ import {
   Palette,
   Frame,
   Clock,
+  Timer,
+  Image,
 } from "lucide-react";
+import GalleryModal from "@/components/GalleryModal";
 
 // === FILTER CONFIGURATION ===
 
@@ -82,11 +85,21 @@ const delayOptions = [
 
 const photoCountOptions = [1, 2, 3, 4, 5, 6];
 
+type photoCapturedDataType = {
+  image: string;
+  filter: string;
+  frame: {
+    name: string;
+    style: string;
+  };
+};
+
+
 const PhotoBooth = () => {
   // States for managing camera, filters, photos, and errors.
 
   const [isCapturing, setIsCapturing] = useState(false);
-  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
+  const [capturedPhotos, setCapturedPhotos] = useState<photoCapturedDataType[]>([]);
   const [selectedFilter, setSelectedFilter] = useState(filters[0]);
   const [selectedFrame, setSelectedFrame] = useState(frames[0]);
   const [showGallery, setShowGallery] = useState(false);
@@ -105,6 +118,7 @@ const PhotoBooth = () => {
   const [selectedPhotoCount, setSelectedPhotoCount] = useState(1);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [currentBurstCount, setCurrentBurstCount] = useState(0);
+  const [galleryPhoto, setGalleryPhoto] = useState<string | null>(null)
 
   // Camera access and error handling state
 
@@ -223,11 +237,21 @@ const PhotoBooth = () => {
       ctx.drawImage(video, -canvas.width, 0);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       const photo = canvas.toDataURL("image/png");
-      setCapturedPhotos((prev) => [...prev, photo]);
-    }
-
+      setCapturedPhotos(prev => [
+        ...prev,
+        {
+          image: photo,
+          filter: selectedFilter.value,
+          frame: {
+            name: selectedFrame.name,
+            style: selectedFrame.style
+          }
+        }
+      ])
+    } 
   
-  }, [selectedFilter]);
+  }, [selectedFilter, selectedFrame]);
+
 
   // === Countdown before photo capture ===
   const startCountdownCapture = useCallback(() => {
@@ -298,6 +322,12 @@ const PhotoBooth = () => {
     link.click();
   };
 
+  const openGallery = (photo: string) => {
+    // Open the photo gallery
+    setGalleryPhoto(photo)
+    setShowGallery(true);
+  }
+
   // === Start camera on mount; stop on unmount ===
   useEffect(() => {
     startCamera();
@@ -307,6 +337,13 @@ const PhotoBooth = () => {
 
   return (
     <div className="min-h-screen bg-white flex justify-center items-center px-4">
+      <GalleryModal
+        isOpen={showGallery}
+        onClose={() => setShowGallery(false)}
+        photos={capturedPhotos.map((data) => data.image)}
+        currentPhoto={galleryPhoto}
+      />
+
       <div className="max-w-6xl mx-auto flex justify-center items-center flex-col">
         {/* Header */}
         <div className="text-center mb-8">
@@ -402,7 +439,7 @@ const PhotoBooth = () => {
                     ) : (
                       <button
                         onClick={startCountdownCapture}
-                        className="rounded-full w-16 h-16 cursor-pointer flex justify-center items-center bg-white text-black hover:bg-gray-100 shadow-lg"
+                        className="rounded-full w-16 h-16 cursor-pointer flex justify-center items-center bg-white/25 backdrop-blur-md text-black hover:bg-gray-100 shadow-lg"
                         disabled={
                           isCountingDown ||
                           isCapturing ||
@@ -436,7 +473,7 @@ const PhotoBooth = () => {
                     <button
                       key={filter.name}
                       onClick={() => setSelectedFilter(filter)}
-                      className={`${filter.color} text-white border-white/20 hover:scale-105 transition-transform px-4 flex justify-center items-center`}
+                      className={`${filter.color} text-white cursor-pointer border-white/20 hover:scale-105 transition-transform px-4 flex justify-center items-center`}
                     >
                       <Icon className="w-4 h-4 mr-1" />
                       {filter.name}
@@ -468,9 +505,10 @@ const PhotoBooth = () => {
 
             {/* Timer Delay */}
             <div>
-              <label className="text-black text-sm mb-2 block">
-                Countdown Timer
-              </label>
+              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+                <Timer className="w-4 h-4" />
+                Countdown timer
+              </h3>
               <div className="flex flex-wrap gap-1">
                 {delayOptions.map((option) => (
                   <button
@@ -491,9 +529,10 @@ const PhotoBooth = () => {
 
             {/* Photo Count */}
             <div>
-              <label className="text-black text-sm mb-2 block">
-                Photos to Take
-              </label>
+              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+                <Image className="w-4 h-4" />
+                Photos to take
+              </h3>
               <div className="flex flex-wrap gap-1">
                 {photoCountOptions.map((count) => (
                   <button
@@ -515,14 +554,14 @@ const PhotoBooth = () => {
         </div>
 
         <div className="mt-5 w-full flex flex-wrap gap-2">
-          {capturedPhotos.map((photo, index) => {
+          {capturedPhotos.map((data, index) => {
             return (
               <div key={index} className="relative group">
                 <img
-                  src={photo || "placeholder.png"}
+                  src={data.image || "placeholder.png"}
                   alt={`Captured photo ${index + 1}`}
-                  className="w-20 h-18 rounded-md object-cover"
-                  onClick={() => setShowGallery(true)}
+                  className={`w-20 h-18 ${data.filter} ${data.frame.style} rounded-md object-cover cursor-pointer`}
+                  onClick={() => openGallery(data.image)}
                 />
               </div>
             );
