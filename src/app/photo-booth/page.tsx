@@ -51,6 +51,12 @@ const filters = [
     icon: Heart,
     color: "bg-red-500",
   },
+  {
+    name: "Twilight",
+    value: "blur(2px) grayscale(100%)",
+    icon: Heart,
+    color: "bg-red-500",
+  },
 ];
 
 // Array of predefined visual filters, each with a name, CSS value, icon, and a color badge.
@@ -344,7 +350,7 @@ useEffect(() => {
 
   
   return (
-    <div className="min-h-screen bg-white flex justify-center items-center px-4">
+    <div className="min-h-screen bg-black flex justify-center items-center px-4">
       <GalleryModal
         isOpen={showGallery}
         onClose={() => setShowGallery(false)}
@@ -355,10 +361,8 @@ useEffect(() => {
       <div className="max-w-6xl mx-auto flex justify-center items-center flex-col">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-black mb-2 flex items-center justify-center gap-2">
-            <Camera className="w-8 h-8" />
-            Fun Photo Booth
-            <Sparkles className="w-8 h-8" />
+          <h1 className="tfont-bold text-white mb-2 flex items-center justify-center gap-2 photobooth-title">
+            Goofy Booth
           </h1>
           <p className="text-zinc-500">
             Strike a pose and capture amazing memories!
@@ -373,7 +377,7 @@ useEffect(() => {
             >
               {cameraPermission === "pending" && (
                 <div className="w-full h-64 bg-gray-800 flex justify-center items-center">
-                  <div className="text-center text-white">
+                  <div className="text-center text-black">
                     <Camera className="w-12 h-12 mx-auto mb-4 animate-pulse" />
                     <p>Requesting camera access</p>
                   </div>
@@ -469,7 +473,7 @@ useEffect(() => {
             {/* Filter Selection */}
 
             <div className="mt-6">
-              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Palette className="w-4 h-4" />
                 Filters
               </h3>
@@ -481,10 +485,15 @@ useEffect(() => {
                     <button
                       key={filter.name}
                       onClick={() => setSelectedFilter(filter)}
-                      className={`${filter.color} text-white cursor-pointer border-white/20 hover:scale-105 transition-transform px-4 flex justify-center items-center`}
+                      className={`flex-col gap-1 text-white cursor-pointer border-white/20 hover:scale-105 transition-transform flex justify-center items-center`}
                     >
-                      <Icon className="w-4 h-4 mr-1" />
-                      {filter.name}
+                      <img
+                        src="/maila.jpg"
+                        className="w-10 h-10 rounded-full object-cover"
+                        style={{ filter: filter.value }}
+                        alt={filter.name}
+                      />
+                      <span className="text-sm text-zinc-400">{filter.name}</span>
                     </button>
                   );
                 })}
@@ -494,7 +503,7 @@ useEffect(() => {
             {/* Frame Selection */}
 
             <div className="mt-4">
-              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Frame className="w-4 h-4" />
                 Frames
               </h3>
@@ -503,7 +512,7 @@ useEffect(() => {
                   <button
                     key={frame.name}
                     onClick={() => setSelectedFrame(frame)}
-                    className={`text-black border-white/20 hover:scale-105 transition-transform ${frame.style}`}
+                    className={`text-white border-white/20 hover:scale-105 transition-transform ${frame.style}`}
                   >
                     {frame.name}
                   </button>
@@ -513,7 +522,7 @@ useEffect(() => {
 
             {/* Timer Delay */}
             <div>
-              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Timer className="w-4 h-4" />
                 Countdown timer
               </h3>
@@ -537,7 +546,7 @@ useEffect(() => {
 
             {/* Photo Count */}
             <div>
-              <h3 className="text-black font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Image className="w-4 h-4" />
                 Photos to take
               </h3>

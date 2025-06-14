@@ -22,7 +22,7 @@ const GalleryModal = ({
      <div className="relative flex flex-col gap-y-2">
         <ArrowBigLeft onClick={() => onClose()} className="text-white cursor-pointer hover:scale-125 transition-all"/>
             <img
-                src={currentPhoto || ""}
+                src={currentPhoto || "/placeholder-image.png"}
                 alt=""
                 width={100}
                 height={100}

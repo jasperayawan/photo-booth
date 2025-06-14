@@ -1,20 +1,111 @@
+"use client";
+
+import GcashModal from "@/components/GcashModal";
+import { Gift } from "lucide-react";
 import Link from "next/link";
-import { BiCamera, BiHeart } from "react-icons/bi";
+import { useEffect, useRef, useState } from "react";
+import { BiCamera } from "react-icons/bi";
+import { supabase } from "@/lib/supabase";
+import type { VisitorRow } from "./types/visitor";
 
 export default function Home() {
+  const [isOpenGcashModal, setIsOpenGcashModal] = useState(false);
+  const [count, setCount] = useState<number | null>(null);
+  const [visitor, setVisitor] = useState<VisitorRow | null>(null);
+  const hasIncremented = useRef(false);
+
+  function formatCount(count: number | null): string {
+    if (count === null) return '...';
+
+    if (count >= 1_000_000_000) return (count / 1_000_000_000).toFixed(2) + 'B';
+    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + 'M';
+    if (count >= 1_000) return (count / 1_000).toFixed(2) + 'K';
+    return count.toString();
+  }
+
+  useEffect(() => {
+    const fetchVisitorCount = async () => {
+      const { data, error } = await supabase
+        .from('visitors')
+        .select('*')
+        .eq('id', 1)
+        .single<VisitorRow>();
+      
+      if (data) {
+        setVisitor(data);
+
+        if (!hasIncremented.current) {
+          hasIncremented.current = true;
+          await supabase
+            .from('visitors')
+            .update({ count: data.count + 1 })
+            .eq('id', 1);
+        }
+      }
+    };
+
+    fetchVisitorCount();
+  },[])
+
+  // 2. Increment only ONCE
+  useEffect(() => {
+    const incrementVisitorCount = async () => {
+      if (count !== null && !hasIncremented.current) {
+        hasIncremented.current = true; // 👈 prevent re-run
+        await supabase
+          .from("visitors")
+          .update({ count: count + 1 })
+          .eq("id", 1);
+      }
+    };
+
+    incrementVisitorCount();
+  }, [count]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('realtime-visitors')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'visitors' },
+        (payload) => {
+          const updatedCount = payload.new.count;
+          setCount(updatedCount);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+}, []);
+
+
   return (
     <div className="flex justify-center items-center h-screen">
+      {
+        isOpenGcashModal && (
+          <GcashModal
+            isOpen={isOpenGcashModal}
+            onClose={() => setIsOpenGcashModal(false)}
+          />
+        )
+      }
       <div className="flex flex-col justify-center items-center gap-y-5">
         <h1 className="text-2xl font title">Photo Booth</h1>
+        <p className="text-sm text-slate-100 max-w-md border border-zinc-600 rounded-2xl p-5 bg-white/10">
+          Your support means the world to me. Even <span className="font-semibold text-white">1 peso</span> is a big help toward continuing my studies.
+          Thank you for your kindness! 🙏
+        </p>
         <div className="flex flex-row justify-center items-center gap-4">
           <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase">
             Start <BiCamera className=""/>
           </Link>
-          <button className="p-5 bg-white rounded-full">
-            <BiHeart />
+          <button onClick={() => setIsOpenGcashModal(true)} className="p-5 cursor-pointer bg-white rounded-full">
+            <Gift className="w-4 h-4 hover:scale-110" />
           </button>
         </div>
-        <p className="text-sm text-slate-200">Version 1.1.0 Visitors last 30 days: <span className="text-white font-semibold">1.03M</span></p>
+        <p className="text-sm text-slate-200">Version 1.1.0 Visitors last 30 days: <span className="text-white font-semibold">{formatCount(visitor?.count ?? null)}</span></p>
       </div>
     </div>
   );

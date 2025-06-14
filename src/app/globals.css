@@ -19,3 +19,8 @@ body {
   @apply text-7xl tracking-widest;
 }
 
+.photobooth-title{
+  font-family: 'Square Peg', cursive;
+  @apply text-6xl;
+}
+
