@@ -235,6 +235,8 @@ const PhotoBooth = () => {
         name: "camera" as PermissionName,
       });
 
+      console.log(result)
+
       if (result.state === "granted") {
         setCameraPermission("granted");
       } else if (result.state === "denied") {
@@ -294,6 +296,21 @@ useEffect(() => {
                   <div className="text-center text-black">
                     <Camera className="w-12 h-12 mx-auto mb-4 animate-pulse" />
                     <p>Requesting camera access</p>
+                    <button onClick={startCamera} className="bg-black text-white rounded px-4 mt-2 cursor-pointer">
+                      Allow Camera Access
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {cameraPermission === "prompt" && (
+                <div className="w-full h-64 bg-gray-800 flex justify-center items-center">
+                  <div className="text-center text-white">
+                    <Camera className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+                    <p>Requesting camera access</p>
+                    <button onClick={startCamera} className="bg-black text-white rounded px-4 mt-2 cursor-pointer">
+                      Allow Camera Access
+                    </button>
                   </div>
                 </div>
               )}

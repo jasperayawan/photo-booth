@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { BiCamera } from "react-icons/bi";
 import { supabase } from "@/lib/supabase";
 import type { VisitorRow } from "../types/types";
-import { formatCount } from "../utils/formatCount";
+import { formatCount, formatDate, getRelativeVisitorTime } from "../utils/formatCount";
 
 export default function Home() {
   const [isOpenGcashModal, setIsOpenGcashModal] = useState(false);
@@ -98,7 +98,18 @@ export default function Home() {
             <Gift className="w-4 h-4 hover:scale-110" />
           </button>
         </div>
-        <p className="text-sm text-slate-200">Version 1.1.0 Visitors last 30 days: <span className="text-white font-semibold">{formatCount(visitor?.count ?? null)}</span></p>
+        <p className="text-sm text-slate-200 text-center">
+          Version 1.1.0 •{" "}
+          <span className="text-white font-semibold">
+            {formatCount(visitor?.count ?? null)} visitors
+          </span>
+          {visitor?.updated_at && (
+            <span className="block text-xs text-slate-400 mt-1">
+              {getRelativeVisitorTime(visitor.updated_at)}
+            </span>
+          )}
+        </p>
+
       </div>
     </div>
   );
