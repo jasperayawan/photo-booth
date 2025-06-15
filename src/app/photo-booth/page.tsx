@@ -235,8 +235,6 @@ const PhotoBooth = () => {
         name: "camera" as PermissionName,
       });
 
-      console.log(result)
-
       if (result.state === "granted") {
         setCameraPermission("granted");
       } else if (result.state === "denied") {
@@ -278,7 +276,7 @@ useEffect(() => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="tfont-bold text-white mb-2 flex items-center justify-center gap-2 photobooth-title">
-            Goofy Booth
+          Photo Booth
           </h1>
           <p className="text-zinc-500">
             Strike a pose and capture amazing memories!
