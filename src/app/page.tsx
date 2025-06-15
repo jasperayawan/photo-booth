@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { BiCamera } from "react-icons/bi";
 import { supabase } from "@/lib/supabase";
-import type { VisitorRow } from "./types/visitor";
+import type { VisitorRow } from "../types/types";
+import { formatCount } from "../utils/formatCount";
 
 export default function Home() {
   const [isOpenGcashModal, setIsOpenGcashModal] = useState(false);
@@ -14,14 +15,6 @@ export default function Home() {
   const [visitor, setVisitor] = useState<VisitorRow | null>(null);
   const hasIncremented = useRef(false);
 
-  function formatCount(count: number | null): string {
-    if (count === null) return '...';
-
-    if (count >= 1_000_000_000) return (count / 1_000_000_000).toFixed(2) + 'B';
-    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + 'M';
-    if (count >= 1_000) return (count / 1_000).toFixed(2) + 'K';
-    return count.toString();
-  }
 
   useEffect(() => {
     const fetchVisitorCount = async () => {
