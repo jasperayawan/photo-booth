@@ -13,6 +13,7 @@ import {
 import GalleryModal from "@/components/GalleryModal";
 import { filters, frames, delayOptions, photoCountOptions } from "@/data/filters";
 import type { photoCapturedDataType } from "../../types/types";
+import FilterSelection from "@/components/FilterSelection";
 
 
 const PhotoBooth = () => {
@@ -406,27 +407,11 @@ useEffect(() => {
                 <Palette className="w-4 h-4" />
                 Filters
               </h3>
-              <div className="flex flex-wrap gap-2">
-                {filters.map((filter) => {
-                  const Icon = filter.icon;
-
-                  return (
-                    <button
-                      key={filter.name}
-                      onClick={() => setSelectedFilter(filter)}
-                      className={`flex-col gap-1 text-white cursor-pointer border-white/20 hover:scale-105 transition-transform flex justify-center items-center`}
-                    >
-                      <img
-                        src="/maila.jpg"
-                        className="w-10 h-10 rounded-full object-cover"
-                        style={{ filter: filter.value }}
-                        alt={filter.name}
-                      />
-                      <span className="text-sm text-zinc-400">{filter.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              <FilterSelection 
+                filters={filters}
+                selectedFilter={selectedFilter}
+                setSelectedFilter={setSelectedFilter}
+              />
             </div>
 
             {/* Frame Selection */}
