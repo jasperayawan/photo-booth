@@ -118,7 +118,8 @@ useEffect(() => {
         <p className="text-sm text-slate-200 text-center">
           Version 1.1.0 •{" "}
           <span className="text-white font-semibold">
-            {formatCount(visitor?.count ?? null)} visitors
+            {(formatCount(visitor?.count ?? null) || '')
+              .replace(/\.0(?=[kMB])/, '')} visitors
           </span>
           {visitor?.updated_at && (
             <span className="block text-xs text-slate-400 mt-1">
