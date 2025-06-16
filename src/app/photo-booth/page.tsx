@@ -265,7 +265,7 @@ useEffect(() => {
 
   
   return (
-    <div className="min-h-screen bg-black flex justify-center items-center px-4">
+    <div className="py-10 md:py-0 min-h-screen bg-black flex justify-center items-center px-4">
       <GalleryModal
         isOpen={showGallery}
         onClose={() => setShowGallery(false)}

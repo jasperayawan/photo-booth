@@ -16,7 +16,7 @@ body {
 .title{
   color: var(--primary);
   font-family: 'Bebas Neue', cursive;
-  @apply text-7xl tracking-widest;
+  @apply text-center text-4xl lg:text-7xl tracking-widest;
 }
 
 .photobooth-title{

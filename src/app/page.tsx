@@ -102,7 +102,7 @@ useEffect(() => {
         )
       }
       <div className="flex flex-col justify-center items-center gap-y-5">
-        <h1 className="text-2xl font title">Photo Booth</h1>
+        <h1 className="text-center font title">Photo Booth</h1>
         <p className="text-sm text-slate-100 max-w-md border border-zinc-600 rounded-2xl p-5 bg-white/10">
           Your support means the world to me. Even <span className="font-semibold text-white">1 peso</span> is a big help toward continuing my studies.
           Thank you for your kindness! 🙏
