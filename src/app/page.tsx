@@ -8,11 +8,13 @@ import { BiCamera } from "react-icons/bi";
 import { supabase } from "@/lib/supabase";
 import type { VisitorRow } from "../types/types";
 import { formatCount, formatDate, getRelativeVisitorTime } from "../utils/formatCount";
+import Loader from "@/components/Loader";
 
 export default function Home() {
   const [isOpenGcashModal, setIsOpenGcashModal] = useState(false);
   const [count, setCount] = useState<number | null>(null);
   const [visitor, setVisitor] = useState<VisitorRow | null>(null);
+  const [loading, setLoading] = useState(true);
   const hasIncremented = useRef(false);
 
 
@@ -73,6 +75,21 @@ export default function Home() {
     };
 }, []);
 
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoading(false)
+  }, 5000)
+
+  return () => clearTimeout(timer)
+},[])
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center h-screen px-4">

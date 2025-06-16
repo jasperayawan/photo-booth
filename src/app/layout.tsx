@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     creator: "@xiaoyan_ku", 
     images: ["https://your-photo-booth-site.com/og-image.png"],
   },
-  metadataBase: new URL("https://your-photo-booth-site.com"),
+  metadataBase: new URL("https://photo-booth-jasper-dev.vercel.app/"),
 };
 
 export default function RootLayout({
