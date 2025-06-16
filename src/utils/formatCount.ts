@@ -1,11 +1,21 @@
 export function formatCount(count: number | null): string {
-    if (count === null) return '...';
+  if (count === null) return '...';
 
-    if (count >= 1_000_000_000) return (count / 1_000_000_000).toFixed(2) + 'B';
-    if (count >= 1_000_000) return (count / 1_000_000).toFixed(2) + 'M';
-    if (count >= 1_000) return (count / 1_000).toFixed(2) + 'K';
-    return count.toString();
+  const format = (value: number, suffix: string) => {
+    const rounded = (value * 10) % 10 === 0
+      ? Math.floor(value)
+      : value.toFixed(1);
+    return `${rounded}${suffix}`;
+  };
+
+  if (count >= 1_000_000_000) return format(count / 1_000_000_000, 'B');
+  if (count >= 1_000_000) return format(count / 1_000_000, 'M');
+  if (count >= 1_000) return format(count / 1_000, 'k');
+
+  return count.toString();
 }
+
+
 
 export const formatDate = (isoDate?: string | null): string => {
   if (!isoDate) return '';
