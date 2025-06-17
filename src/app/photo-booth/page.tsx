@@ -9,6 +9,8 @@ import {
   Frame,
   Timer,
   Image,
+  Maximize2,
+  Repeat
 } from "lucide-react";
 import GalleryModal from "@/components/GalleryModal";
 import { filters, frames, delayOptions, photoCountOptions } from "@/data/filters";
@@ -40,6 +42,9 @@ const PhotoBooth = () => {
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [currentBurstCount, setCurrentBurstCount] = useState(0);
   const [galleryPhoto, setGalleryPhoto] = useState<string | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const cameraContainerRef = useRef<HTMLDivElement>(null)
+  const [isMirrored, setIsMirrored] = useState(true)
 
   // Camera access and error handling state
 
@@ -221,6 +226,19 @@ const PhotoBooth = () => {
     setShowGallery(true);
   }
 
+  const handleFullscreen = () => {
+    const elem = cameraContainerRef.current;
+    if(elem) {
+      if (!document.fullscreenElement){
+        elem.requestFullscreen?.();
+        setIsFullscreen(true);
+      } else {
+        document.exitFullscreen?.();
+        setIsFullscreen(false);
+      }
+    }
+  }
+
   // === Start camera on mount; stop on unmount ===
 
   useEffect(() => {
@@ -343,8 +361,28 @@ useEffect(() => {
                 </div>
               )}
 
-              {cameraPermission === "granted" && (
-                <>
+             {cameraPermission === "granted" && (
+                <div
+                  ref={cameraContainerRef}
+                  className={`relative rounded-lg overflow-hidden ${selectedFrame.style} ${isFullscreen ? "fixed inset-0 z-50 bg-black" : ""}`}
+                >
+                  {/* Fullscreen Button */}
+                  <button
+                    onClick={handleFullscreen}
+                    className="absolute cursor-pointer top-2 right-2 bg-black/60 text-white rounded p-2 z-10"
+                    title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                  >
+                    {isFullscreen ? "⤫" : <Maximize2 size={15}/>}
+                  </button>
+
+                  <button
+                    onClick={() => setIsMirrored((prev) => !prev)}
+                    className="absolute cursor-pointer top-2 left-2 bg-black/60 text-white rounded p-2 z-10"
+                    title="Flip Camera"
+                  >
+                    <Repeat size={15}/>
+                  </button>
+
                   <video
                     ref={videoRef}
                     autoPlay
@@ -353,7 +391,7 @@ useEffect(() => {
                     className="w-full h-auto"
                     style={{
                       filter: selectedFilter.value,
-                      transform: "scaleX(-1)", // Mirror the video for a natural selfie experience
+                      transform: isMirrored ? "scaleX(-1)" : "scaleX(1)", // Mirror the video for a natural selfie experience
                     }}
                   ></video>
 
@@ -392,7 +430,7 @@ useEffect(() => {
                       </button>
                     )}
                   </div>
-                </>
+                </div>
               )}
 
               <canvas ref={canvasRef} className="hidden" />
