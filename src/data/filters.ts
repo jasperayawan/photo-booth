@@ -13,7 +13,6 @@ export const filters = [
 export const frames = [
   { name: "None", style: "" },
   { name: "Classic", style: "border-8 border-white shadow-2xl" },
-  { name: "Polaroid", style: "border-8 border-white border-b-16 shadow-2xl bg-white p-2" },
   { name: "Neon", style: "border-4 border-pink-400 shadow-lg shadow-pink-400/50" },
   { name: "Gold", style: "border-6 border-yellow-400 shadow-lg shadow-yellow-400/30" },
 ];

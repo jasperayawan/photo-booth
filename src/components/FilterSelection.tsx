@@ -11,6 +11,7 @@ interface Filter {
 
 interface FilterSelectorProps {
   filters: Filter[];
+  setFilterIntensity: (intensity: number) => void;
   selectedFilter: Filter;
   setSelectedFilter: (filter: Filter) => void;
 }
@@ -18,15 +19,19 @@ interface FilterSelectorProps {
 const FilterSelection = ({
   filters,
   selectedFilter,
+  setFilterIntensity,
   setSelectedFilter,
 }: FilterSelectorProps) => {
   return <div className="flex flex-wrap gap-2">
     {filters.map((filter) => (
       <button
         key={filter.name}
-        onClick={() => setSelectedFilter(filter)}
+        onClick={() => {
+          setSelectedFilter(filter)
+          setFilterIntensity(1)
+        }}
         className={`flex-col text-white cursor-pointer border-white/20 hover:scale-105 transition-transform flex justify-center items-center ${
-          selectedFilter.name === filter.name ? "ring-2 ring-white" : ""
+          selectedFilter.name === filter.name ? "bg-zinc-800" : ""
         }`}
       >
         <img

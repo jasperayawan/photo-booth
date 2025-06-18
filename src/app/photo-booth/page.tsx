@@ -45,6 +45,7 @@ const PhotoBooth = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const cameraContainerRef = useRef<HTMLDivElement>(null)
   const [isMirrored, setIsMirrored] = useState(true)
+  const [filterIntensity, setFilterIntensity] = useState(1);
 
   // Camera access and error handling state
 
@@ -239,6 +240,31 @@ const PhotoBooth = () => {
     }
   }
 
+    const getFilterStyle = () => {
+      switch (selectedFilter.name) {
+        case "None":
+          return "none";
+        case "Vintage":
+          // sepia and contrast
+          return `sepia(${filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
+        case "B&W":
+          return `grayscale(${filterIntensity})`;
+        case "Vibrant":
+          // saturate and contrast
+          return `saturate(${1 + filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
+        case "Cool":
+          // hue-rotate is not intensity-based, but saturate is
+          return `hue-rotate(180deg) saturate(${1 + 0.5 * filterIntensity})`;
+        case "Warm":
+          // hue-rotate is not intensity-based, but saturate is
+          return `hue-rotate(30deg) saturate(${1 + 0.3 * filterIntensity})`;
+        case "Twilight":
+          // blur and grayscale
+          return `blur(${2 * filterIntensity}px) grayscale(${filterIntensity})`;
+        default:
+          return selectedFilter.value;
+      }
+    };
   // === Start camera on mount; stop on unmount ===
 
   useEffect(() => {
@@ -283,7 +309,7 @@ useEffect(() => {
 
   
   return (
-    <div className="py-10 md:py-0 min-h-screen bg-black flex justify-center items-center px-4">
+    <div className="py-10 min-h-screen bg-black flex justify-center items-center px-4">
       <GalleryModal
         isOpen={showGallery}
         onClose={() => setShowGallery(false)}
@@ -306,7 +332,7 @@ useEffect(() => {
           <div className="relative">
             {/* Camera Preview */}
             <div
-              className={`relative rounded-lg overflow-hidden ${selectedFrame.style}`}
+              className={`relative rounded-lg overflow-hidden`}
             >
               {cameraPermission === "pending" && (
                 <div className="w-full h-64 bg-gray-800 flex justify-center items-center">
@@ -390,8 +416,8 @@ useEffect(() => {
                     muted
                     className="w-full h-auto"
                     style={{
-                      filter: selectedFilter.value,
-                      transform: isMirrored ? "scaleX(-1)" : "scaleX(1)", // Mirror the video for a natural selfie experience
+                      filter: getFilterStyle(),
+                      transform: isMirrored ? "scaleX(-1)" : "scaleX(1)", 
                     }}
                   ></video>
 
@@ -441,21 +467,36 @@ useEffect(() => {
             {/* Filter Selection */}
 
             <div className="mt-6">
-              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white text-sm mb-3 flex items-center gap-2">
                 <Palette className="w-4 h-4" />
                 Filters
               </h3>
               <FilterSelection 
                 filters={filters}
+                setFilterIntensity={setFilterIntensity}
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
               />
             </div>
 
+            {selectedFilter.value !== "none" && (
+              <div className="flex items-center gap-2 mt-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={filterIntensity}
+                  onChange={e => setFilterIntensity(Number(e.target.value))}
+                  className="w-96 accent-white h-2"
+                />
+              </div>
+            )}
+
             {/* Frame Selection */}
 
             <div className="mt-4">
-              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white text-sm mb-3 flex items-center gap-2">
                 <Frame className="w-4 h-4" />
                 Frames
               </h3>
@@ -464,7 +505,7 @@ useEffect(() => {
                   <button
                     key={frame.name}
                     onClick={() => setSelectedFrame(frame)}
-                    className={`text-white border-white/20 hover:scale-105 transition-transform ${frame.style}`}
+                    className={`text-white cursor-pointer text-sm border-white/20 hover:scale-105 transition-transform ${frame.style}`}
                   >
                     {frame.name}
                   </button>
@@ -474,7 +515,7 @@ useEffect(() => {
 
             {/* Timer Delay */}
             <div>
-              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white text-sm mb-3 flex items-center gap-2">
                 <Timer className="w-4 h-4" />
                 Countdown timer
               </h3>
@@ -483,10 +524,10 @@ useEffect(() => {
                   <button
                     key={option.value}
                     onClick={() => setSelectedDelay(option.value)}
-                    className={`text-black border-white/20 cursor-pointer ${
+                    className={`border-white/20 rounded cursor-pointer ${
                       selectedDelay === option.value
-                        ? "bg-slate-400"
-                        : "bg-slate-200"
+                        ? "bg-[#ACFA17]"
+                        : "bg-zinc-600 text-zinc-300"
                     } hover:scale-105 transition-transform min-w-[2rem]`}
                     disabled={isCountingDown}
                   >
@@ -498,7 +539,7 @@ useEffect(() => {
 
             {/* Photo Count */}
             <div>
-              <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-white text-sm mb-3 flex items-center gap-2">
                 <Image className="w-4 h-4" />
                 Photos to take
               </h3>
@@ -507,10 +548,10 @@ useEffect(() => {
                   <button
                     key={count}
                     onClick={() => setSelectedPhotoCount(count)}
-                    className={`text-black border-white/20 ${
+                    className={`border-white/20 rounded ${
                       selectedPhotoCount === count
-                        ? "bg-slate-400"
-                        : "bg-slate-200"
+                        ? "bg-[#ACFA17]"
+                        : "bg-zinc-600 text-zinc-300"
                     } cursor-pointer hover:scale-105 transition-transform min-w-[2rem]`}
                     disabled={isCountingDown}
                   >

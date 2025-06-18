@@ -108,21 +108,21 @@ useEffect(() => {
           Thank you for your kindness! 🙏
         </p>
         <div className="flex flex-row justify-center items-center gap-4">
-          <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase hover:bg-slate-200">
+          <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-[#ACFA17] rounded-full px-9 py-3 font-semibold uppercase hover:bg-slate-200">
             Start <BiCamera className=""/>
           </Link>
           <button onClick={() => setIsOpenGcashModal(true)} className="p-5 cursor-pointer bg-white rounded-full hover:bg-slate-200">
             <Gift className="w-4 h-4 hover:scale-110" />
           </button>
         </div>
-        <p className="text-sm text-slate-200 text-center">
+        <p className="text-sm text-zinc-400 text-center">
           Version 2.1.0 •{" "}
           <span className="text-white font-semibold">
             {(formatCount(visitor?.count ?? null) || '')
               .replace(/\.0(?=[kMB])/, '')} visitors
           </span>
           {visitor?.updated_at && (
-            <span className="block text-xs text-slate-400 mt-1">
+            <span className="block text-xs text-zinc-500 mt-1">
               {getRelativeVisitorTime(visitor.updated_at)}
             </span>
           )}
