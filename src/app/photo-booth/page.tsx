@@ -42,7 +42,7 @@ const PhotoBooth = () => {
   const [selectedPhotoCount, setSelectedPhotoCount] = useState(1);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [currentBurstCount, setCurrentBurstCount] = useState(0);
-  const [galleryPhoto, setGalleryPhoto] = useState<string | null>(null)
+  const [galleryPhoto, setGalleryPhoto] = useState<photoCapturedDataType | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false);
   const cameraContainerRef = useRef<HTMLDivElement>(null)
   const [isMirrored, setIsMirrored] = useState(true)
@@ -225,7 +225,7 @@ const PhotoBooth = () => {
     link.click();
   };
 
-  const openGallery = (photo: string) => {
+  const openGallery = (photo: photoCapturedDataType) => {
     // Open the photo gallery
     setGalleryPhoto(photo)
     setShowGallery(true);
@@ -581,7 +581,7 @@ useEffect(() => {
                     transform: data.mirror ? "scaleX(1)" : "scaleX(-1)"
                   }}
                   className={`w-20 h-18 ${data.frame.style} rounded-md object-cover cursor-pointer`}
-                  onClick={() => openGallery(data.image)}
+                  onClick={() => openGallery(data)}
                 />
               </div>
             );
