@@ -1,13 +1,13 @@
 import { Camera, Palette, Sparkles, Zap, Star, Heart } from "lucide-react";
 
 export const filters = [
-  { name: "None", value: "none", icon: Camera, color: "bg-gray-500" },
-  { name: "Vintage", value: "sepia(100%) contrast(120%)", icon: Palette, color: "bg-amber-500" },
-  { name: "B&W", value: "grayscale(100%)", icon: Sparkles, color: "bg-gray-700" },
-  { name: "Vibrant", value: "saturate(200%) contrast(120%)", icon: Zap, color: "bg-purple-500" },
-  { name: "Cool", value: "hue-rotate(180deg) saturate(150%)", icon: Star, color: "bg-blue-500" },
-  { name: "Warm", value: "hue-rotate(30deg) saturate(130%)", icon: Heart, color: "bg-red-500" },
-  { name: "Twilight", value: "blur(2px) grayscale(100%)", icon: Heart, color: "bg-red-500" },
+  { name: "None", value: "none", intensity: 1, icon: Camera, color: "bg-gray-500" },
+  { name: "Vintage", value: "sepia(100%) contrast(120%)", intensity: 1, icon: Palette, color: "bg-amber-500" },
+  { name: "B&W", value: "grayscale(100%)", intensity: 1, icon: Sparkles, color: "bg-gray-700" },
+  { name: "Vibrant", value: "saturate(200%) contrast(120%)", intensity: 1, icon: Zap, color: "bg-purple-500" },
+  { name: "Cool", value: "hue-rotate(180deg) saturate(150%)", intensity: 1, icon: Star, color: "bg-blue-500" },
+  { name: "Warm", value: "hue-rotate(30deg) saturate(130%)", intensity: 1, icon: Heart, color: "bg-red-500" },
+  { name: "Twilight", value: "blur(2px) grayscale(100%)", intensity: 1, icon: Heart, color: "bg-red-500" },
 ];
 
 export const frames = [

@@ -16,6 +16,7 @@ import GalleryModal from "@/components/GalleryModal";
 import { filters, frames, delayOptions, photoCountOptions } from "@/data/filters";
 import type { photoCapturedDataType } from "../../types/types";
 import FilterSelection from "@/components/FilterSelection";
+import type { Filter } from "../../types/types";
 
 
 const PhotoBooth = () => {
@@ -129,20 +130,21 @@ const PhotoBooth = () => {
     const ctx = canvas.getContext("2d");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+    const filterStyle = getFilterStyle();
 
     if (ctx) {
-      ctx.filter = selectedFilter.value;
       ctx.scale(-1, 1);
       ctx.drawImage(video, -canvas.width, 0);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       const photo = canvas.toDataURL("image/png");
 
+      
       setCapturedPhotos(prev => [
         ...prev,
         {
           image: photo,
           mirror: isMirrored,
-          filter: selectedFilter.value,
+          filter: filterStyle,
           frame: {
             name: selectedFrame.name,
             style: selectedFrame.style
@@ -151,7 +153,7 @@ const PhotoBooth = () => {
       ])
     } 
   
-  }, [selectedFilter, selectedFrame, isMirrored]);
+  }, [selectedFilter, selectedFrame, isMirrored, filterIntensity]);
 
 
   // === Countdown before photo capture ===
@@ -242,31 +244,31 @@ const PhotoBooth = () => {
     }
   }
 
-    const getFilterStyle = () => {
-      switch (selectedFilter.name) {
-        case "None":
-          return "none";
-        case "Vintage":
-          // sepia and contrast
-          return `sepia(${filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
-        case "B&W":
-          return `grayscale(${filterIntensity})`;
-        case "Vibrant":
-          // saturate and contrast
-          return `saturate(${1 + filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
-        case "Cool":
-          // hue-rotate is not intensity-based, but saturate is
-          return `hue-rotate(180deg) saturate(${1 + 0.5 * filterIntensity})`;
-        case "Warm":
-          // hue-rotate is not intensity-based, but saturate is
-          return `hue-rotate(30deg) saturate(${1 + 0.3 * filterIntensity})`;
-        case "Twilight":
-          // blur and grayscale
-          return `blur(${2 * filterIntensity}px) grayscale(${filterIntensity})`;
-        default:
-          return selectedFilter.value;
-      }
-    };
+  const handleSelectFilter = (filter: Filter) => {
+    setSelectedFilter(filter);
+    setFilterIntensity(1)
+  };
+
+   const getFilterStyle = () => {
+    switch (selectedFilter.name) {
+      case "None":
+        return "none";
+      case "Vintage":
+        return `sepia(${filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
+      case "B&W":
+        return `grayscale(${filterIntensity})`;
+      case "Vibrant":
+        return `saturate(${1 + filterIntensity}) contrast(${1 + 0.2 * filterIntensity})`;
+      case "Cool":
+        return `hue-rotate(180deg) saturate(${1 + 0.5 * filterIntensity})`;
+      case "Warm":
+        return `hue-rotate(30deg) saturate(${1 + 0.3 * filterIntensity})`;
+      case "Twilight":
+        return `blur(${2 * filterIntensity}px) grayscale(${filterIntensity})`;
+      default:
+        return selectedFilter.value;
+    }
+  };
   // === Start camera on mount; stop on unmount ===
 
   useEffect(() => {
@@ -475,6 +477,7 @@ useEffect(() => {
               </h3>
               <FilterSelection 
                 filters={filters}
+                handleSelectFilter={handleSelectFilter}
                 setFilterIntensity={setFilterIntensity}
                 selectedFilter={selectedFilter}
                 setSelectedFilter={setSelectedFilter}
@@ -567,15 +570,17 @@ useEffect(() => {
 
         <div className="mt-5 w-full flex flex-wrap gap-2">
           {capturedPhotos.map((data, index) => {
+
             return (
               <div key={index} className="relative group">
                 <img
                   src={data.image || "placeholder.png"}
                   alt={`Captured photo ${index + 1}`}
                   style={{
+                    filter: data.filter,
                     transform: data.mirror ? "scaleX(1)" : "scaleX(-1)"
                   }}
-                  className={`w-20 h-18 ${data.filter} ${data.frame.style} rounded-md object-cover cursor-pointer`}
+                  className={`w-20 h-18 ${data.frame.style} rounded-md object-cover cursor-pointer`}
                   onClick={() => openGallery(data.image)}
                 />
               </div>

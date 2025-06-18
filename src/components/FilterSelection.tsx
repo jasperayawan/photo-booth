@@ -1,16 +1,10 @@
 import React from "react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { LucideProps } from "lucide-react"; 
+import type { Filter } from "@/types/types";
 
-interface Filter {
-  name: string;
-  value: string;
-  icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
-  color: string;
-}
 
 interface FilterSelectorProps {
   filters: Filter[];
+  handleSelectFilter: (filter: Filter) => void;
   setFilterIntensity: (intensity: number) => void;
   selectedFilter: Filter;
   setSelectedFilter: (filter: Filter) => void;
@@ -21,19 +15,17 @@ const FilterSelection = ({
   selectedFilter,
   setFilterIntensity,
   setSelectedFilter,
+  handleSelectFilter
 }: FilterSelectorProps) => {
   return <div className="flex flex-wrap gap-2">
     {filters.map((filter) => (
       <button
         key={filter.name}
-        onClick={() => {
-          setSelectedFilter(filter)
-          setFilterIntensity(1)
-        }}
+        onClick={() => handleSelectFilter(filter)}
         className={`flex-col text-white cursor-pointer border-white/20 hover:scale-105 transition-transform flex justify-center items-center ${
           selectedFilter.name === filter.name ? "bg-zinc-800" : ""
         }`}
-      >
+      > 
         <img
           src="/maila.jpg"
           className="w-10 h-10 rounded-full object-cover"
