@@ -488,7 +488,7 @@ useEffect(() => {
                   step={0.01}
                   value={filterIntensity}
                   onChange={e => setFilterIntensity(Number(e.target.value))}
-                  className="w-96 accent-white h-2"
+                  className="w-full md:w-96 accent-white h-2"
                 />
               </div>
             )}
