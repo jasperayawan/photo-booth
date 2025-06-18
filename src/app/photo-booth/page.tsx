@@ -394,7 +394,7 @@ useEffect(() => {
              {cameraPermission === "granted" && (
                 <div
                   ref={cameraContainerRef}
-                  className={`relative rounded-lg overflow-hidden ${selectedFrame.style} ${isFullscreen ? "fixed inset-0 z-50 bg-black" : ""}`}
+                  className={`relative ${isFullscreen ? '' : 'rounded-lg'} overflow-hidden ${selectedFrame.style} ${isFullscreen ? "fixed inset-0 z-50 bg-black" : ""}`}
                 >
                   {/* Fullscreen Button */}
                   <button
@@ -418,7 +418,7 @@ useEffect(() => {
                     autoPlay
                     playsInline
                     muted
-                    className="w-full h-auto"
+                    className="w-full h-full object-cover"
                     style={{
                       filter: getFilterStyle(),
                       transform: isMirrored ? "scaleX(-1)" : "scaleX(1)", 
