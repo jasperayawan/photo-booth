@@ -8,6 +8,7 @@ export type VisitorRow = {
 export type photoCapturedDataType = {
   image: string;
   filter: string;
+  mirror: boolean,
   frame: {
     name: string;
     style: string;

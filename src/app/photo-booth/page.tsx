@@ -136,10 +136,12 @@ const PhotoBooth = () => {
       ctx.drawImage(video, -canvas.width, 0);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       const photo = canvas.toDataURL("image/png");
+
       setCapturedPhotos(prev => [
         ...prev,
         {
           image: photo,
+          mirror: isMirrored,
           filter: selectedFilter.value,
           frame: {
             name: selectedFrame.name,
@@ -149,7 +151,7 @@ const PhotoBooth = () => {
       ])
     } 
   
-  }, [selectedFilter, selectedFrame]);
+  }, [selectedFilter, selectedFrame, isMirrored]);
 
 
   // === Countdown before photo capture ===
@@ -307,7 +309,7 @@ useEffect(() => {
   }
 }, [cameraPermission, startCamera]);
 
-  
+
   return (
     <div className="py-10 min-h-screen bg-black flex justify-center items-center px-4">
       <GalleryModal
@@ -570,6 +572,9 @@ useEffect(() => {
                 <img
                   src={data.image || "placeholder.png"}
                   alt={`Captured photo ${index + 1}`}
+                  style={{
+                    transform: data.mirror ? "scaleX(1)" : "scaleX(-1)"
+                  }}
                   className={`w-20 h-18 ${data.filter} ${data.frame.style} rounded-md object-cover cursor-pointer`}
                   onClick={() => openGallery(data.image)}
                 />
