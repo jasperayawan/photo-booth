@@ -108,15 +108,15 @@ useEffect(() => {
           Thank you for your kindness! 🙏
         </p>
         <div className="flex flex-row justify-center items-center gap-4">
-          <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase">
+          <Link href='/photo-booth' className="flex justify-center items-center gap-x-2 bg-white rounded-full px-9 py-3 font-semibold uppercase hover:bg-slate-200">
             Start <BiCamera className=""/>
           </Link>
-          <button onClick={() => setIsOpenGcashModal(true)} className="p-5 cursor-pointer bg-white rounded-full">
+          <button onClick={() => setIsOpenGcashModal(true)} className="p-5 cursor-pointer bg-white rounded-full hover:bg-slate-200">
             <Gift className="w-4 h-4 hover:scale-110" />
           </button>
         </div>
         <p className="text-sm text-slate-200 text-center">
-          Version 1.1.0 •{" "}
+          Version 2.1.0 •{" "}
           <span className="text-white font-semibold">
             {(formatCount(visitor?.count ?? null) || '')
               .replace(/\.0(?=[kMB])/, '')} visitors
