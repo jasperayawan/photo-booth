@@ -55,6 +55,10 @@ const PhotoBooth = () => {
   "prompt" | "granted" | "denied" | "pending"
 >("prompt");
 
+  const loveWords = [
+    "Love", "Affection", "Adoration", "Passion", "Devotion", "Fondness", "Cherish", "Sweetheart", "Romance", "Amour", "Admiration", "Tenderness", "Heartfelt", "Beloved", "Endearment"
+  ];
+
   // === Function to start the camera stream ===
  const startCamera = useCallback(async () => {
   try {
@@ -131,6 +135,7 @@ const PhotoBooth = () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const filterStyle = getFilterStyle();
+    const randomWord = loveWords[Math.floor(Math.random() * loveWords.length)]
 
     if (ctx) {
       ctx.scale(-1, 1);
@@ -143,8 +148,9 @@ const PhotoBooth = () => {
         ...prev,
         {
           image: photo,
-          mirror: isMirrored,
           filter: filterStyle,
+          loveWord: randomWord,
+          mirror: isMirrored,
           frame: {
             name: selectedFrame.name,
             style: selectedFrame.style
@@ -153,7 +159,7 @@ const PhotoBooth = () => {
       ])
     } 
   
-  }, [selectedFilter, selectedFrame, isMirrored, filterIntensity]);
+  }, [selectedFilter, selectedFrame, isMirrored, filterIntensity, loveWords]);
 
 
   // === Countdown before photo capture ===
@@ -310,6 +316,7 @@ useEffect(() => {
     startCamera();
   }
 }, [cameraPermission, startCamera]);
+
 
 
   return (
@@ -572,7 +579,7 @@ useEffect(() => {
           {capturedPhotos.map((data, index) => {
 
             return (
-              <div key={index} className="relative group">
+              <div key={index} className={`flex flex-col bg-white justify-center items-center relative group rounded-[2px] ${data.frame.name === "None" ? "bg-white px-2 pt-2" : data.frame.style}`}>
                 <img
                   src={data.image || "placeholder.png"}
                   alt={`Captured photo ${index + 1}`}
@@ -580,9 +587,10 @@ useEffect(() => {
                     filter: data.filter,
                     transform: data.mirror ? "scaleX(1)" : "scaleX(-1)"
                   }}
-                  className={`w-20 h-18 ${data.frame.style} rounded-md object-cover cursor-pointer`}
+                  className={`w-40 h-40 object-cover cursor-pointer`}
                   onClick={() => openGallery(data)}
                 />
+                <span className={`w-full text-center random-words py-2`}>{data.loveWord}</span>
               </div>
             );
           })}

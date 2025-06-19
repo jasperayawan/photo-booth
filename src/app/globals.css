@@ -25,6 +25,10 @@ body {
   @apply text-6xl;
 }
 
+.random-words{
+  font-family: 'Square Peg', cursive;
+}
+
 
 .loader {
         height: 5px;
