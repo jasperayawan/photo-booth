@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { v4 as uuidv4 } from 'uuid'
 import {
   Camera,
   Download,
@@ -17,6 +18,7 @@ import { filters, frames, delayOptions, photoCountOptions } from "@/data/filters
 import type { photoCapturedDataType } from "../../types/types";
 import FilterSelection from "@/components/FilterSelection";
 import type { Filter } from "../../types/types";
+import { v4 } from "uuid";
 
 
 const PhotoBooth = () => {
@@ -147,6 +149,7 @@ const PhotoBooth = () => {
       setCapturedPhotos(prev => [
         ...prev,
         {
+          id: uuidv4(),
           image: photo,
           filter: filterStyle,
           loveWord: randomWord,
@@ -159,7 +162,7 @@ const PhotoBooth = () => {
       ])
     } 
   
-  }, [selectedFilter, selectedFrame, isMirrored, filterIntensity, loveWords]);
+  }, [selectedFilter, selectedFrame, isMirrored, filterIntensity, loveWords, galleryPhoto]);
 
 
   // === Countdown before photo capture ===
@@ -224,12 +227,80 @@ const PhotoBooth = () => {
   ]);
 
   // === Download a photo ===
-  const downloadPhoto = (photoData: string, index: number) => {
+const downloadPhoto = (data: photoCapturedDataType) => {
+  const canvasHeight = 304; // 40 * 8 (Tailwind's h-40)
+  const canvasWidth = 360;  
+  const padding = 16; // px-2 pt-2 (8px each, adjust as needed)
+  const textHeight = 32; // Height for the loveWord text
+  const paddingBottom = 24; // Extra bottom padding for the canvas
+
+  const canvas = document.createElement("canvas");
+  canvas.width = canvasWidth + padding * 2;
+  canvas.height = canvasHeight + padding + textHeight + paddingBottom;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  // Draw background (white or frame color)
+  ctx.fillStyle = data.frame.name === "None" ? "#fff" : data.frame.style
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw frame border if needed
+  if (data.frame.name !== "None") {
+    ctx.save();
+    ctx.strokeStyle = "#FFD700"; // Example frame color
+    ctx.lineWidth = 8;
+    ctx.strokeRect(0, 0, canvas.width, canvas.height - textHeight - paddingBottom);
+    ctx.restore();
+  }
+
+  // Draw the image (with filter and mirror)
+  const img = new window.Image();
+  img.src = data.image;
+  img.onload = () => {
+    ctx.save();
+    ctx.filter = data.filter;
+    if (data.mirror) {
+      ctx.drawImage(
+        img,
+        padding,
+        padding,
+        canvasWidth,
+        canvasHeight
+      );
+    } else {
+      ctx.translate(canvas.width, 0)
+      ctx.scale(-1, 1)
+      ctx.drawImage(
+        img,
+        padding,
+        padding,
+        canvasWidth,
+        canvasHeight
+      );
+    }
+    ctx.restore();
+    
+
+    // Draw the loveWord text
+    ctx.font = "32px 'Square Peg', cursive";
+    ctx.fillStyle = "#000000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const offsetFromBottom = 25;
+    ctx.fillText(
+      data.loveWord || "",
+      canvas.width / 2,
+      canvas.height - offsetFromBottom
+    );
+
+    // Download
     const link = document.createElement("a");
-    link.download = `photo-booth-${Date.now()}-${index}.png`;
-    link.href = photoData;
+    link.download = `photo-booth-${Date.now()}-${data.id}.png`;
+    link.href = canvas.toDataURL("image/png");
     link.click();
   };
+};
 
   const openGallery = (photo: photoCapturedDataType) => {
     // Open the photo gallery
@@ -323,6 +394,7 @@ useEffect(() => {
     <div className="py-10 min-h-screen bg-black flex justify-center items-center px-4">
       <GalleryModal
         isOpen={showGallery}
+        downloadPhoto={downloadPhoto}
         onClose={() => setShowGallery(false)}
         photos={capturedPhotos.map((data) => data.image)}
         currentPhoto={galleryPhoto}

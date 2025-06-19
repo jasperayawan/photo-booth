@@ -17,6 +17,7 @@ export type VisitorRow = {
 };
 
 export type photoCapturedDataType = {
+  id: string;
   image: string;
   filter: string;
   loveWord: string | null;
