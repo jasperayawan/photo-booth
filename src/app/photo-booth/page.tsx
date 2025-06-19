@@ -229,7 +229,7 @@ const PhotoBooth = () => {
   // === Download a photo ===
 const downloadPhoto = (data: photoCapturedDataType) => {
   const canvasHeight = 304; // 40 * 8 (Tailwind's h-40)
-  const canvasWidth = 360;  
+  const canvasWidth = 270;  
   const padding = 16; // px-2 pt-2 (8px each, adjust as needed)
   const textHeight = 32; // Height for the loveWord text
   const paddingBottom = 24; // Extra bottom padding for the canvas
@@ -260,9 +260,27 @@ const downloadPhoto = (data: photoCapturedDataType) => {
   img.onload = () => {
     ctx.save();
     ctx.filter = data.filter;
+
+    // 👉 Calculate aspect ratios for object-fit: cover effect
+    const imgAspect = img.width / img.height;
+    const canvasAspect = canvasWidth / canvasHeight;
+
+    let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height;
+
+    if (imgAspect > canvasAspect) {
+    // Image is wider — crop left/right
+    sWidth = img.height * canvasAspect;
+    sx = (img.width - sWidth) / 2;
+    } else {
+      // Image is taller — crop top/bottom
+      sHeight = img.width / canvasAspect;
+      sy = (img.height - sHeight) / 2;
+    }
+
     if (data.mirror) {
       ctx.drawImage(
         img,
+        sx, sy, sWidth, sHeight, 
         padding,
         padding,
         canvasWidth,
@@ -273,6 +291,7 @@ const downloadPhoto = (data: photoCapturedDataType) => {
       ctx.scale(-1, 1)
       ctx.drawImage(
         img,
+        sx, sy, sWidth, sHeight, 
         padding,
         padding,
         canvasWidth,
