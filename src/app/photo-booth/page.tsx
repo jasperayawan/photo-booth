@@ -156,7 +156,8 @@ const PhotoBooth = () => {
           mirror: isMirrored,
           frame: {
             name: selectedFrame.name,
-            style: selectedFrame.style
+            style: selectedFrame.style,
+            strokeColor: selectedFrame.strokeColor
           }
         }
       ])
@@ -242,15 +243,20 @@ const downloadPhoto = (data: photoCapturedDataType) => {
   if (!ctx) return;
 
   // Draw background (white or frame color)
-  ctx.fillStyle = data.frame.name === "None" ? "#fff" : data.frame.style
+  ctx.fillStyle = data.frame.name === "None" ? "#fff" : data.frame.strokeColor
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw frame border if needed
   if (data.frame.name !== "None") {
     ctx.save();
-    ctx.strokeStyle = "#FFD700"; // Example frame color
+    ctx.strokeStyle = data.frame.strokeColor
     ctx.lineWidth = 8;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height - textHeight - paddingBottom);
+    ctx.strokeRect(
+      padding - ctx.lineWidth / 2,
+      padding - ctx.lineWidth / 2,
+      canvasWidth + ctx.lineWidth,
+      canvasHeight + ctx.lineWidth
+    );
     ctx.restore();
   }
 

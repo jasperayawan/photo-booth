@@ -25,5 +25,6 @@ export type photoCapturedDataType = {
   frame: {
     name: string;
     style: string;
+    strokeColor: string;
   };
 };

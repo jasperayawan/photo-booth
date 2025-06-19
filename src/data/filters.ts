@@ -11,10 +11,10 @@ export const filters = [
 ];
 
 export const frames = [
-  { name: "None", style: "" },
-  { name: "Classic", style: "border-8 border-white shadow-2xl" },
-  { name: "Neon", style: "border-4 border-pink-400 shadow-lg shadow-pink-400/50" },
-  { name: "Gold", style: "border-6 border-yellow-400 shadow-lg shadow-yellow-400/30" },
+  { name: "None", style: "", strokeColor: "" },
+  { name: "Classic", style: "border-8 border-white shadow-2xl", strokeColor: "#ffffff" },
+  { name: "Neon", style: "border-4 border-pink-400 shadow-lg shadow-pink-400/50", strokeColor: "#ec4899" }, // Tailwind pink-400
+  { name: "Gold", style: "border-6 border-yellow-400 shadow-lg shadow-yellow-400/30", strokeColor: "#facc15" }, // Tailwind yellow-400
 ];
 
 export const delayOptions = [
