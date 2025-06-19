@@ -23,7 +23,7 @@ import {
 import type { photoCapturedDataType } from "../../types/types";
 import FilterSelection from "@/components/FilterSelection";
 import type { Filter } from "../../types/types";
-import { v4 } from "uuid";
+import { loveWords } from "@/data/filters";
 
 const PhotoBooth = () => {
   // States for managing camera, filters, photos, and errors.
@@ -64,24 +64,7 @@ const PhotoBooth = () => {
     "prompt" | "granted" | "denied" | "pending"
   >("prompt");
 
-  const loveWords = [
-    "Love",
-    "Affection",
-    "Adoration",
-    "Passion",
-    "Devotion",
-    "Fondness",
-    "Cherish",
-    "Sweetheart",
-    "Romance",
-    "Amour",
-    "Admiration",
-    "Tenderness",
-    "Heartfelt",
-    "Beloved",
-    "Endearment",
-  ];
-
+  
   // === Function to start the camera stream ===
   const startCamera = useCallback(async () => {
     try {

@@ -24,6 +24,37 @@ export const delayOptions = [
   { label: "10s", value: 10 },
 ];
 
+export const loveWords = [
+    "Love",
+    "Affection",
+    "Adoration",
+    "Passion",
+    "Devotion",
+    "Fondness",
+    "Cherish",
+    "Sweetheart",
+    "Romance",
+    "Amour",
+    "Admiration",
+    "Tenderness",
+    "Heartfelt",
+    "Beloved",
+    "Endearment",
+    "LOL", "Goofy", "Silly", "Oops!", "Cringe", 
+    "No Chill", "Epic Fail", "Meme King", "Clown Mode", "Snack Attack",
+    "Bruh", "Chill Pill", "Zero Thoughts", "I'm Baby", "Vibe Check",
+    "Lonely", "Tears", "Melancholy", "Broken", "Lost",
+    "Rainy Days", "Empty", "Goodbye", "Miss You", "Fade Away",
+    "Cold Inside", "Quiet Cry", "Still Waiting", "Painful Smile", "Gone",
+    "You Got This", "Keep Going", "Stay Strong", "Rise Up", "Never Quit",
+    "Focus", "Dream Big", "One Step", "Believe", "Unstoppable",
+    "Be You", "Make It Happen", "Shine Bright", "Hustle Hard", "Growth",
+    "Island Vibes", "Caffeine", "Sunkissed", "Midnight", "Retro",
+    "Pixelated", "Tropical", "Snapshot", "Late Night", "No Signal",
+    "Glitch", "Chroma", "Polaroid", "Infinite", "Flashback"
+  ];
+
+
 // Options for selecting a countdown timer delay before capturing a photo.
 
 export const photoCountOptions = [1, 2, 3, 4, 5, 6];
