@@ -64,7 +64,6 @@ const PhotoBooth = () => {
     "prompt" | "granted" | "denied" | "pending"
   >("prompt");
 
-  
   // === Function to start the camera stream ===
   const startCamera = useCallback(async () => {
     try {
@@ -241,11 +240,11 @@ const PhotoBooth = () => {
 
   // === Download a photo ===
   const downloadPhoto = (data: photoCapturedDataType) => {
-    const canvasHeight = 304; // 40 * 8 (Tailwind's h-40)
+    const canvasHeight = 304;
     const canvasWidth = 270;
-    const padding = 16; // px-2 pt-2 (8px each, adjust as needed)
-    const textHeight = 32; // Height for the loveWord text
-    const paddingBottom = 24; // Extra bottom padding for the canvas
+    const padding = 16;
+    const textHeight = 32;
+    const paddingBottom = 24;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth + padding * 2;
@@ -254,7 +253,7 @@ const PhotoBooth = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Draw background (white or frame color)
+    // Draw background
     ctx.fillStyle =
       data.frame.name === "None" ? "#fff" : data.frame.strokeColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
