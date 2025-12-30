@@ -4,6 +4,7 @@
  */
 
 import type { photoCapturedDataType } from "../types/types";
+import { WATERMARK_CONFIG } from "../data/premium";
 
 export type CollageLayout = "strip-4x1" | "strip-2x1" | "grid-2x2" | "single";
 
@@ -13,6 +14,7 @@ interface CollageOptions {
   backgroundColor?: string;
   padding?: number;
   showLoveWords?: boolean;
+  isPremium?: boolean;
 }
 
 // Layout configurations
@@ -24,6 +26,35 @@ const LAYOUTS = {
 };
 
 /**
+ * Draw watermark on canvas
+ */
+function drawWatermark(
+  ctx: CanvasRenderingContext2D,
+  canvasWidth: number,
+  canvasHeight: number
+): void {
+  const { text, font, color, shadowColor, padding } = WATERMARK_CONFIG;
+
+  ctx.save();
+  ctx.font = font;
+  const textMetrics = ctx.measureText(text);
+  const textWidth = textMetrics.width;
+
+  const x = canvasWidth - textWidth - padding;
+  const y = canvasHeight - padding - 14;
+
+  ctx.fillStyle = shadowColor;
+  ctx.fillText(text, x + 1, y + 1);
+
+  ctx.fillStyle = color;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText(text, x, y);
+
+  ctx.restore();
+}
+
+/**
  * Generate a collage/strip from multiple photos
  */
 export async function generateCollage(options: CollageOptions): Promise<string> {
@@ -33,6 +64,7 @@ export async function generateCollage(options: CollageOptions): Promise<string> 
     backgroundColor = "#ffffff",
     padding = 16,
     showLoveWords = true,
+    isPremium = false,
   } = options;
 
   const config = LAYOUTS[layout];
@@ -138,6 +170,11 @@ export async function generateCollage(options: CollageOptions): Promise<string> 
     ctx.fillStyle = "#666666";
     ctx.textAlign = "center";
     ctx.fillText("Photo Booth", canvasWidth / 2, canvasHeight - 8);
+  }
+
+  // Draw watermark for non-premium users
+  if (!isPremium) {
+    drawWatermark(ctx, canvasWidth, canvasHeight);
   }
 
   return canvas.toDataURL("image/png");

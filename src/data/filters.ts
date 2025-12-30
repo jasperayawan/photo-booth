@@ -1,6 +1,28 @@
-import { Camera, Palette, Sparkles, Zap, Star, Heart, Sun, Moon, Cloud, Flame } from "lucide-react";
+import { Camera, Palette, Sparkles, Zap, Star, Heart, Sun, Moon, Cloud, Flame, type LucideIcon } from "lucide-react";
+import { SPONSORED_FILTERS, SPONSORED_FRAMES, type Sponsor } from "./premium";
 
-export const filters = [
+// Filter type with optional sponsor
+export interface Filter {
+  name: string;
+  value: string;
+  intensity: number;
+  icon: LucideIcon;
+  color: string;
+  premium?: boolean;
+  sponsor?: Sponsor;
+}
+
+// Frame type with optional sponsor
+export interface Frame {
+  name: string;
+  style: string;
+  strokeColor: string;
+  premium?: boolean;
+  sponsor?: Sponsor;
+}
+
+// All filters available to users
+export const filters: Filter[] = [
   // Basic
   { name: "None", value: "none", intensity: 1, icon: Camera, color: "bg-gray-500" },
   { name: "B&W", value: "grayscale(100%)", intensity: 1, icon: Sparkles, color: "bg-gray-700" },
@@ -29,7 +51,21 @@ export const filters = [
   { name: "Retro", value: "sepia(40%) hue-rotate(-10deg) saturate(150%)", intensity: 1, icon: Palette, color: "bg-amber-600" },
 ];
 
-export const frames = [
+// Add sponsored filters
+export const allFilters: Filter[] = [
+  ...filters,
+  ...SPONSORED_FILTERS.filter(sf => sf.sponsor.active).map(sf => ({
+    name: sf.name,
+    value: sf.value,
+    intensity: sf.intensity,
+    icon: Sparkles,
+    color: sf.color,
+    sponsor: sf.sponsor,
+  })),
+];
+
+// All frames available to users
+export const frames: Frame[] = [
   // Basic
   { name: "None", style: "", strokeColor: "" },
   { name: "Classic", style: "border-8 border-white", strokeColor: "#ffffff" },
@@ -49,6 +85,29 @@ export const frames = [
   { name: "Polaroid", style: "border-8 border-b-16 border-white", strokeColor: "#ffffff" },
   { name: "Vintage", style: "border-8 border-amber-100", strokeColor: "#fef3c7" },
 ];
+
+// Add sponsored frames
+export const allFrames: Frame[] = [
+  ...frames,
+  ...SPONSORED_FRAMES.filter(sf => sf.sponsor.active).map(sf => ({
+    name: sf.name,
+    style: sf.style,
+    strokeColor: sf.strokeColor,
+    sponsor: sf.sponsor,
+  })),
+];
+
+// Helper to get available filters based on tier
+export function getAvailableFilters(isPremium: boolean): Filter[] {
+  if (isPremium) return allFilters;
+  return allFilters.filter(f => !f.premium || f.sponsor?.active);
+}
+
+// Helper to get available frames based on tier
+export function getAvailableFrames(isPremium: boolean): Frame[] {
+  if (isPremium) return allFrames;
+  return allFrames.filter(f => !f.premium || f.sponsor?.active);
+}
 
 export const delayOptions = [
   { label: "1s", value: 1 },
@@ -73,7 +132,7 @@ export const loveWords = [
     "Heartfelt",
     "Beloved",
     "Endearment",
-    "LOL", "Goofy", "Silly", "Oops!", "Cringe", 
+    "LOL", "Goofy", "Silly", "Oops!", "Cringe",
     "No Chill", "Epic Fail", "Meme King", "Clown Mode", "Snack Attack",
     "Bruh", "Chill Pill", "Zero Thoughts", "I'm Baby", "Vibe Check",
     "Lonely", "Tears", "Melancholy", "Broken", "Lost",

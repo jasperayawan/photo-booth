@@ -17,6 +17,7 @@ export default function FrameSelector() {
       <div className="flex flex-wrap gap-1.5">
         {frames.map((frame) => {
           const isSelected = selectedFrame.name === frame.name;
+
           return (
             <button
               key={frame.name}
@@ -24,11 +25,11 @@ export default function FrameSelector() {
               disabled={isCountingDown}
               className={`
                 text-xs px-2.5 py-1.5 rounded-md
-                cursor-pointer transition-colors duration-150
-                disabled:opacity-50 disabled:cursor-not-allowed
+                transition-colors duration-150
+                disabled:cursor-not-allowed
                 ${isSelected
-                  ? "bg-stone-700 text-white"
-                  : "bg-stone-200/50 text-stone-600 hover:bg-stone-200"
+                  ? "bg-stone-700 text-white cursor-pointer"
+                  : "bg-stone-200/50 text-stone-600 hover:bg-stone-200 cursor-pointer"
                 }
               `}
             >

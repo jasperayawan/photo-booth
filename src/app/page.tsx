@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import type { VisitorRow } from "../types/types";
 import { formatCount, getRelativeVisitorTime } from "../utils/formatCount";
 import GcashModal from "@/components/GcashModal";
+import { APP_VERSION } from "@/data/premium";
 
 export default function Home() {
   const [isOpenGcashModal, setIsOpenGcashModal] = useState(false);
@@ -298,18 +299,56 @@ export default function Home() {
           Your support helps me continue my studies. Every contribution matters.
         </p>
 
+        {/* Navigation Links */}
+        <div
+          className={`
+            flex items-center justify-center gap-6 mt-8
+            transition-all duration-700 ease-out
+            ${isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
+          `}
+          style={{ transitionDelay: "800ms" }}
+        >
+          <Link
+            href="/pricing"
+            className="group relative text-sm text-stone-500 hover:text-stone-700 transition-colors"
+          >
+            Pricing
+            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] bg-amber-400 text-amber-900 px-1.5 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Coming Soon
+            </span>
+          </Link>
+          <Link
+            href="/api-docs"
+            className="group relative text-sm text-stone-500 hover:text-stone-700 transition-colors"
+          >
+            API
+            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] bg-amber-400 text-amber-900 px-1.5 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Coming Soon
+            </span>
+          </Link>
+          <Link
+            href="/embed-docs"
+            className="group relative text-sm text-stone-500 hover:text-stone-700 transition-colors"
+          >
+            Embed
+            <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-[8px] bg-amber-400 text-amber-900 px-1.5 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Coming Soon
+            </span>
+          </Link>
+        </div>
+
         {/* Footer info */}
         <div
           className={`
             absolute bottom-8 left-0 right-0
-            flex flex-col items-center gap-1
+            flex flex-col items-center gap-2
             transition-all duration-700 ease-out
             ${isRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
           `}
-          style={{ transitionDelay: "850ms" }}
+          style={{ transitionDelay: "900ms" }}
         >
           <p className="text-stone-400 text-xs tracking-wider">
-            v2.1.0
+            v{APP_VERSION}
             {visitor && (
               <>
                 <span className="mx-2">•</span>

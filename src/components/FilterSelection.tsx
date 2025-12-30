@@ -1,5 +1,5 @@
 import React from "react";
-import type { Filter } from "@/types/types";
+import type { Filter } from "@/data/filters";
 
 interface FilterSelectorProps {
   filters: Filter[];
@@ -18,21 +18,23 @@ const FilterSelection = ({
     <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 gap-2">
       {filters.map((filter) => {
         const isSelected = selectedFilter.name === filter.name;
+
         return (
           <button
             key={filter.name}
             onClick={() => handleSelectFilter(filter)}
             className={`
-              group flex flex-col items-center gap-1
-              p-1.5 rounded-lg cursor-pointer
+              group relative flex flex-col items-center gap-1
+              p-1.5 rounded-lg
               transition-colors duration-150
+              cursor-pointer
               ${isSelected ? "bg-stone-200/50" : "hover:bg-stone-200/30"}
             `}
           >
             {/* Filter preview image */}
             <div
               className={`
-                w-11 h-11 rounded-md overflow-hidden
+                relative w-11 h-11 rounded-md overflow-hidden
                 ${isSelected ? "ring-2 ring-stone-600" : ""}
               `}
             >
