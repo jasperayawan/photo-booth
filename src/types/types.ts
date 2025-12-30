@@ -1,5 +1,5 @@
 import { ForwardRefExoticComponent, RefAttributes } from "react";
-import { LucideProps } from "lucide-react"; 
+import { LucideProps } from "lucide-react";
 
 export type Filter = {
   name: string;
@@ -7,6 +7,12 @@ export type Filter = {
   intensity: number;
   icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
   color: string;
+}
+
+export type Frame = {
+  name: string;
+  style: string;
+  strokeColor: string;
 }
 
 export type VisitorRow = {
@@ -21,10 +27,8 @@ export type photoCapturedDataType = {
   image: string;
   filter: string;
   loveWord: string | null;
-  mirror: boolean,
-  frame: {
-    name: string;
-    style: string;
-    strokeColor: string;
-  };
+  mirror: boolean;
+  frame: Frame;
 };
+
+export type CameraPermissionState = "prompt" | "granted" | "denied" | "pending";

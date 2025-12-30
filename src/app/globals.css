@@ -1,6 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Square+Peg&display=swap');
 @import "tailwindcss";
-
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 :root {
   --background-white: #ffffff;
@@ -8,6 +7,143 @@
   --background-black: #000000;
   --foreground: #171717;
   --green: #ACFA17;
+
+  /* Design System - Glassmorphism */
+  --accent: #ACFA17;
+  --accent-glow: rgba(172, 250, 23, 0.3);
+  --accent-subtle: rgba(172, 250, 23, 0.15);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+}
+
+/* Card Components - Light theme */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Animations */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Floating Leaves Animations */
+@keyframes sway-slow {
+  0%, 100% {
+    transform: rotate(-3deg) translateX(0);
+  }
+  25% {
+    transform: rotate(2deg) translateX(5px);
+  }
+  50% {
+    transform: rotate(-2deg) translateX(-3px);
+  }
+  75% {
+    transform: rotate(3deg) translateX(4px);
+  }
+}
+
+@keyframes sway-medium {
+  0%, 100% {
+    transform: rotate(2deg) translateY(0);
+  }
+  33% {
+    transform: rotate(-3deg) translateY(-8px);
+  }
+  66% {
+    transform: rotate(4deg) translateY(5px);
+  }
+}
+
+.animate-sway-slow {
+  animation: sway-slow 8s ease-in-out infinite;
+}
+
+.animate-sway-medium {
+  animation: sway-medium 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out forwards;
+}
+
+/* Interactive States */
+.btn-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.btn-glass:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+  transform: translateY(-1px);
+}
+
+.btn-glass:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: black;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-accent:hover {
+  opacity: 0.9;
+}
+
+.btn-accent:active {
+  opacity: 0.8;
 }
 
 body {

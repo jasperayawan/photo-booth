@@ -1,20 +1,53 @@
-import { Camera, Palette, Sparkles, Zap, Star, Heart } from "lucide-react";
+import { Camera, Palette, Sparkles, Zap, Star, Heart, Sun, Moon, Cloud, Flame } from "lucide-react";
 
 export const filters = [
+  // Basic
   { name: "None", value: "none", intensity: 1, icon: Camera, color: "bg-gray-500" },
-  { name: "Vintage", value: "sepia(100%) contrast(120%)", intensity: 1, icon: Palette, color: "bg-amber-500" },
   { name: "B&W", value: "grayscale(100%)", intensity: 1, icon: Sparkles, color: "bg-gray-700" },
-  { name: "Vibrant", value: "saturate(200%) contrast(120%)", intensity: 1, icon: Zap, color: "bg-purple-500" },
+
+  // Warm tones
+  { name: "Vintage", value: "sepia(100%) contrast(120%)", intensity: 1, icon: Palette, color: "bg-amber-500" },
+  { name: "Warm", value: "hue-rotate(30deg) saturate(130%)", intensity: 1, icon: Flame, color: "bg-orange-500" },
+  { name: "Golden", value: "sepia(50%) saturate(140%) brightness(110%)", intensity: 1, icon: Sun, color: "bg-yellow-500" },
+
+  // Cool tones
   { name: "Cool", value: "hue-rotate(180deg) saturate(150%)", intensity: 1, icon: Star, color: "bg-blue-500" },
-  { name: "Warm", value: "hue-rotate(30deg) saturate(130%)", intensity: 1, icon: Heart, color: "bg-red-500" },
-  { name: "Twilight", value: "blur(2px) grayscale(100%)", intensity: 1, icon: Heart, color: "bg-red-500" },
+  { name: "Arctic", value: "hue-rotate(200deg) saturate(80%) brightness(110%)", intensity: 1, icon: Cloud, color: "bg-cyan-400" },
+
+  // Vibrant
+  { name: "Vibrant", value: "saturate(200%) contrast(120%)", intensity: 1, icon: Zap, color: "bg-purple-500" },
+  { name: "Pop Art", value: "saturate(300%) contrast(150%) brightness(110%)", intensity: 1, icon: Zap, color: "bg-pink-500" },
+
+  // Moody
+  { name: "Noir", value: "grayscale(100%) contrast(150%) brightness(90%)", intensity: 1, icon: Moon, color: "bg-gray-900" },
+  { name: "Fade", value: "contrast(90%) brightness(110%) saturate(80%)", intensity: 1, icon: Cloud, color: "bg-slate-400" },
+  { name: "Twilight", value: "hue-rotate(270deg) saturate(60%) brightness(90%)", intensity: 1, icon: Moon, color: "bg-indigo-600" },
+
+  // Artistic
+  { name: "Dreamy", value: "blur(1px) brightness(110%) saturate(120%)", intensity: 1, icon: Heart, color: "bg-pink-300" },
+  { name: "Vignette", value: "contrast(110%) brightness(95%)", intensity: 1, icon: Camera, color: "bg-gray-600" },
+  { name: "Retro", value: "sepia(40%) hue-rotate(-10deg) saturate(150%)", intensity: 1, icon: Palette, color: "bg-amber-600" },
 ];
 
 export const frames = [
+  // Basic
   { name: "None", style: "", strokeColor: "" },
-  { name: "Classic", style: "border-8 border-white shadow-2xl", strokeColor: "#ffffff" },
-  { name: "Neon", style: "border-4 border-pink-400 shadow-lg shadow-pink-400/50", strokeColor: "#ec4899" }, // Tailwind pink-400
-  { name: "Gold", style: "border-6 border-yellow-400 shadow-lg shadow-yellow-400/30", strokeColor: "#facc15" }, // Tailwind yellow-400
+  { name: "Classic", style: "border-8 border-white", strokeColor: "#ffffff" },
+  { name: "Black", style: "border-8 border-black", strokeColor: "#000000" },
+
+  // Colors
+  { name: "Pink", style: "border-4 border-pink-400", strokeColor: "#ec4899" },
+  { name: "Blue", style: "border-4 border-cyan-400", strokeColor: "#22d3ee" },
+  { name: "Green", style: "border-4 border-lime-400", strokeColor: "#a3e635" },
+
+  // Metallic
+  { name: "Gold", style: "border-4 border-yellow-400", strokeColor: "#facc15" },
+  { name: "Silver", style: "border-4 border-gray-300", strokeColor: "#d1d5db" },
+  { name: "Rose", style: "border-4 border-rose-300", strokeColor: "#fda4af" },
+
+  // Special
+  { name: "Polaroid", style: "border-8 border-b-16 border-white", strokeColor: "#ffffff" },
+  { name: "Vintage", style: "border-8 border-amber-100", strokeColor: "#fef3c7" },
 ];
 
 export const delayOptions = [
