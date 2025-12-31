@@ -23,26 +23,81 @@ export function useCamera(): UseCameraReturn {
     useState<CameraPermissionState>("prompt");
   const [cameraError, setCameraError] = useState<string | null>(null);
 
-  // Start camera stream
+  // Start camera stream with fallback for mobile devices
   const startCamera = useCallback(async () => {
     try {
       setCameraError(null);
+      setCameraPermission("pending");
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error("Camera not supported in this browser.");
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: "user",
-        },
-      });
+      // Try with ideal constraints first, then fallback for mobile compatibility
+      let stream: MediaStream;
+
+      try {
+        // First attempt with preferred constraints
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: "user",
+          },
+          audio: false,
+        });
+      } catch (constraintError) {
+        // Fallback: try with minimal constraints for mobile compatibility
+        console.warn("Falling back to basic video constraints:", constraintError);
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+          },
+          audio: false,
+        });
+      }
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         streamRef.current = stream;
+
+        // Wait for video to be ready (important for mobile)
+        await new Promise<void>((resolve, reject) => {
+          if (!videoRef.current) {
+            reject(new Error("Video element not found"));
+            return;
+          }
+
+          const video = videoRef.current;
+
+          const onLoadedMetadata = () => {
+            video.removeEventListener("loadedmetadata", onLoadedMetadata);
+            video.removeEventListener("error", onError);
+            video.play()
+              .then(() => resolve())
+              .catch((playError) => {
+                console.warn("Auto-play failed, user interaction may be required:", playError);
+                resolve(); // Still resolve, video might play on interaction
+              });
+          };
+
+          const onError = () => {
+            video.removeEventListener("loadedmetadata", onLoadedMetadata);
+            video.removeEventListener("error", onError);
+            reject(new Error("Video failed to load"));
+          };
+
+          video.addEventListener("loadedmetadata", onLoadedMetadata);
+          video.addEventListener("error", onError);
+
+          // Timeout fallback
+          setTimeout(() => {
+            video.removeEventListener("loadedmetadata", onLoadedMetadata);
+            video.removeEventListener("error", onError);
+            resolve();
+          }, 3000);
+        });
+
         setCameraPermission("granted");
       }
     } catch (error: unknown) {
@@ -74,7 +129,22 @@ export function useCamera(): UseCameraReturn {
         err.name === "OverconstrainedError" ||
         err.name === "ConstraintNotSatisfiedError"
       ) {
-        setCameraError("Camera does not meet the required specifications.");
+        // Try one more time with absolute minimal constraints
+        try {
+          const fallbackStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+          if (videoRef.current) {
+            videoRef.current.srcObject = fallbackStream;
+            streamRef.current = fallbackStream;
+            setCameraPermission("granted");
+            setCameraError(null);
+            return;
+          }
+        } catch {
+          setCameraError("Camera does not meet the required specifications.");
+        }
       } else {
         setCameraError(
           `Camera error: ${err.message || "Unknown error occurred"}`
@@ -98,10 +168,13 @@ export function useCamera(): UseCameraReturn {
     startCamera();
   }, [startCamera]);
 
-  // Check permission on mount
+  // Check permission on mount (with mobile compatibility)
   useEffect(() => {
     const checkPermission = async () => {
-      if (!navigator.permissions) {
+      // Skip permission query on iOS - it's not supported and can cause issues
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+      if (isIOS || !navigator.permissions) {
         setCameraPermission("prompt");
         return;
       }
@@ -126,6 +199,7 @@ export function useCamera(): UseCameraReturn {
           setCameraPermission(result.state as CameraPermissionState);
         };
       } catch {
+        // Permissions API not supported or failed - default to prompt
         setCameraPermission("prompt");
       }
     };
@@ -133,9 +207,9 @@ export function useCamera(): UseCameraReturn {
     checkPermission();
   }, []);
 
-  // Start camera when permission is granted
+  // Start camera when permission is granted (desktop auto-start)
   useEffect(() => {
-    if (cameraPermission === "granted") {
+    if (cameraPermission === "granted" && !streamRef.current) {
       startCamera();
     }
   }, [cameraPermission, startCamera]);
