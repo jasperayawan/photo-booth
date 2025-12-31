@@ -157,13 +157,14 @@ export default function GalleryModal() {
           </div>
         </div>
 
-        {/* Navigation Arrows - Outside polaroid */}
+        {/* Navigation Arrows - Inside on mobile, outside on desktop */}
         {totalPhotos > 1 && (
           <>
             <button
               onClick={() => navigateGallery("prev")}
               className="
-                absolute left-0 top-1/2 -translate-y-1/2 -translate-x-14
+                absolute top-1/2 -translate-y-1/2
+                left-2 md:left-0 md:-translate-x-14
                 w-10 h-10 rounded-full
                 bg-white/90 shadow-lg backdrop-blur-sm
                 flex items-center justify-center
@@ -178,7 +179,8 @@ export default function GalleryModal() {
             <button
               onClick={() => navigateGallery("next")}
               className="
-                absolute right-0 top-1/2 -translate-y-1/2 translate-x-14
+                absolute top-1/2 -translate-y-1/2
+                right-2 md:right-0 md:translate-x-14
                 w-10 h-10 rounded-full
                 bg-white/90 shadow-lg backdrop-blur-sm
                 flex items-center justify-center
@@ -239,8 +241,8 @@ export default function GalleryModal() {
           </div>
         </div>
 
-        {/* Keyboard hint */}
-        <p className="text-center text-stone-400 text-xs mt-4">
+        {/* Keyboard hint - desktop only */}
+        <p className="hidden md:block text-center text-stone-400 text-xs mt-4">
           Arrow keys to navigate
         </p>
       </div>

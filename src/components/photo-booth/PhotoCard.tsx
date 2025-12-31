@@ -49,13 +49,14 @@ export default function PhotoCard({
             onClick={() => onView(photo, index)}
           />
 
-          {/* Hover overlay with actions */}
+          {/* Hover overlay with actions - hidden on mobile, visible on desktop hover */}
           <div
             className="
               absolute inset-0 bg-black/40
-              opacity-0 group-hover:opacity-100
+              opacity-0 hidden md:flex
+              md:group-hover:opacity-100
               transition-opacity duration-200
-              flex items-center justify-center gap-3
+              items-center justify-center gap-3
             "
           >
             <button
